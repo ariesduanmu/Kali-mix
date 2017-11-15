@@ -11,7 +11,7 @@ my $password = "bandit0";
 my $port = "2220";
 my $command = "";
 
-my $bandit_count = 10;
+my $bandit_count = 15;
 
 sub next_level {
     my ($user) = @_;
@@ -68,6 +68,15 @@ sub next_command {
     }
     elsif ($num == 7){
         return "cat data.txt | grep millionth | sed -e 's/^millionth//'";
+    }
+    elsif ($num == 8){
+        return "cat data.txt | sort | uniq -u";
+    }
+    elsif ($num == 9){
+        return "strings data.txt | grep '=' | cut -d '=' -f11 | tail -c 36";
+    }
+    elsif ($num == 10){
+        return "base64 -d data.tx";
     }
 }
 
