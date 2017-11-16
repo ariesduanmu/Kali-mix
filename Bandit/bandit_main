@@ -1,0 +1,61 @@
+require "bandit_ssh";
+require "utility";
+
+use strict;
+use warnings;
+
+my $host = "bandit.labs.overthewire.org";
+my $port = 2220;
+
+my $password_filename="passwords.txt";
+my $commands_filename="commands.txt";
+
+
+my %cmd_hash = read_file($commands_filename);
+
+sub add_first_userpass{
+	clean_file($password_filename);
+	append_file($password_filename,"bandit0:bandit0\n");
+}
+
+sub available_passwords{
+    my @k = sort{(substr $a,6) <=> (substr $b,6)}(keys %cmd_hash);
+    @k = map{(substr $_,0,6).((substr $_,6) + 1)}@k;
+    return @k;
+}
+
+sub bandit_pwd{
+	my ($level) = @_;
+	my $level_name = "bandit".$level;
+	my %password_hash = read_file($password_filename);
+
+	if(!exists $password_hash{$level_name}){
+	    my $pass = bandit_sshout("bandit".($level-1), $host, $port, bandit_pwd($level-1), $cmd_hash{"bandit".($level-1)});
+	    append_file($password_filename, $level_name.":".$pass."\n");
+	    return $pass;
+	}else{
+	    return $password_hash{$level_name};
+	}
+}
+
+
+my @aps = available_passwords;
+add_first_userpass;
+
+while(1){
+	print "Which password you want to get, from '$aps[0]' to '$aps[$#aps]'.\nEnter number from 1 to ".($#aps + 1).":";
+    my $opt = <>;
+    while ($opt > ($#aps + 1) || $opt < 1){
+	    print "Enter number from 1 to ".($#aps + 1).":";
+	    $opt = <>;
+    }
+    chomp $opt;
+    print "bandint".$opt.":".bandit_pwd($opt)."\n";
+}
+
+
+
+
+
+
+

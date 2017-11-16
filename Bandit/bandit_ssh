@@ -1,0 +1,14 @@
+use lib '/Users/liqin/.cpan/build/';
+use Net::SSH::Perl;
+
+sub bandit_sshout{
+    my($user, $host, $port, $pass, $cmd)=@_;
+	my $ssh = Net::SSH::Perl->new($host, port=>$port);
+	$ssh->login($user, $pass);
+	my($stdout, $stderr, $exit) = $ssh->cmd("$cmd");
+	chomp $stdout;
+	$stdout =~ s/\s//g;
+	return $stdout;
+}
+
+1;

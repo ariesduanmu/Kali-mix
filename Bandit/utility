@@ -1,0 +1,28 @@
+sub read_file {
+    my ($filename) = @_;
+    my %hash;
+    open CONFIG, $filename or die;
+    while (my $line = <CONFIG>) {
+        chomp $line;
+        my ($lvl, $cmd) = split /:/, $line;
+        $hash{$lvl} = $cmd;
+    }
+    close CONFIG;
+    return %hash;
+}
+
+sub append_file {
+	my ($filename, $content) = @_;
+	open BEDROCK, ">>".$filename or die;
+	print BEDROCK $content;
+	close BEDROCK;
+}
+
+sub clean_file {
+	my ($filename) = @_;
+	open BEDROCK, ">".$filename or die;
+	print BEDROCK "";
+	close BEDROCK;
+}
+
+1;
