@@ -1,8 +1,11 @@
 bandit0:cat readme
 bandit1:cat ./-
 bandit2:cat 'spaces in this filename'
-bandit3:cat inhere/.hidden
-bandit4:cat inhere./-file07
-bandit5:cat inhere./maybehere07/.file2
+bandit3:cd inhere && cat .hidden
+bandit4:cd inhere && cat ./-file07
+bandit5:cd inhere && cat ./maybehere07/.file2
 bandit6:cat /var/lib/dpkg/info/bandit7.password
-bandit7:cat data.txt | grep millionth
+bandit7:cat data.txt | grep millionth | sed -e 's/^millionth//'
+bandit8:cat data.txt | sort | uniq -u
+bandit9:strings data.txt | grep '=' | cut -d '=' -f11 | tail -c 36
+bandit10:base64 -d data.txt

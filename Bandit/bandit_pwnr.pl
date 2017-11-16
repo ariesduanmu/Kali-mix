@@ -11,7 +11,7 @@ my $password = "bandit0";
 my $port = "2220";
 my $command = "";
 
-my $bandit_count = 15;
+
 
 sub next_level {
     my ($user) = @_;
@@ -29,64 +29,28 @@ sub bandit_level {
 }
 
 
-# I tried to hash this... PERL debugging is shit
-# sub read_file {
-#     my %hash;
-#     open my $fh, "commands.txt" or die;
-#     while (my $line = <$fh>) {
-#         chomp $line;
-#         print $line . "\n";
-#         my ($lvl, $cmd) = split /:/, $file;
-#         $hash{$lvl} = $cmd;
-#     }
-#     return $hash;
-# }
-
-sub next_command {
-    my ($user) = @_;
-    my ($num) = $user =~ /(\d+)/;
-    if ($num == 0){
-        return "cat readme";
+sub read_file {
+    my %hash;
+    open CONFIG, "commands.txt" or die;
+    while (my $line = <CONFIG>) {
+        chomp $line;
+        my ($lvl, $cmd) = split /:/, $line;
+        $hash{$lvl} = $cmd;
     }
-    elsif ($num == 1){
-        return "cat ./-";
-    }
-    elsif ($num == 2){
-        return "cat 'spaces in this filename'";
-    }
-    elsif ($num == 3){
-        return "cd inhere && cat .hidden";
-    }
-    elsif ($num == 4){
-        return "cd inhere && cat ./-file07";
-    }
-    elsif ($num == 5){
-        return "cd inhere && cat ./maybehere07/.file2";
-    }
-    elsif ($num == 6){
-        return "cat /var/lib/dpkg/info/bandit7.password";
-    }
-    elsif ($num == 7){
-        return "cat data.txt | grep millionth | sed -e 's/^millionth//'";
-    }
-    elsif ($num == 8){
-        return "cat data.txt | sort | uniq -u";
-    }
-    elsif ($num == 9){
-        return "strings data.txt | grep '=' | cut -d '=' -f11 | tail -c 36";
-    }
-    elsif ($num == 10){
-        return "base64 -d data.tx";
-    }
+    close CONFIG;
+    return %hash;
 }
 
-while ($bandit_count > 0)
+
+my %hash = read_file;
+my $bandit_count = scalar(keys %hash);
+
+while ($bandit_count-- > 0)
 {
     print "$username:$password\n";
-    $command = next_command($username);
+    $command = $hash{$username};
     $password = bandit_level($password, $username, "$command");
     chomp $password;
     $password =~ s/\s//g;
     $username = next_level($username);
-    $bandit_count--;
 }
