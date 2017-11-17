@@ -42,7 +42,6 @@ ls -la
 ltrace ./level3
  -- snlprintf
 
-whoami
 cat /etc/leviathan_pass/leviathan4
 
 $$$$$$$$$$$$$$
@@ -53,7 +52,7 @@ ls -la
 cd .trash
 ls -la
 ./bin
--- 01010100 01101001 01110100 01101000 00110100 01100011 01101111 01101011 01100101 01101001 00001010
+ -- 01010100 01101001 01110100 01101000 00110100 01100011 01101111 01101011 01100101 01101001 00001010
 
 echo "01010100 01101001 01110100 01101000 00110100 01100011 01101111 01101011 01100101 01101001 00001010" | perl -lape '$_=pack"(B8)*",@F'
 
@@ -61,7 +60,41 @@ $$$$$$$$$$$$$$
 $$$ 555555 $$$
 $$$$$$$$$$$$$$
 
+ls -la
+ltrace ./leviathan5
 
+ln -s /etc/leviathan_pass/leviathan6 /tmp/file.log
+
+$$$$$$$$$$$$$$
+$$$ 666666 $$$
+$$$$$$$$$$$$$$
+
+ls -la
+ltrace ./leviathan6
+ltrace ./leviathan6 0000
+mkdir /tmp/levi6 && touch /tmp/levi6/forced.sh && cd /tmp/levi6
+vi forced.sh
+
+--#!/bin/bash
+--for i in {0000..9999}
+--do
+--    ~/leviathan6 $i
+--done
+--[esc]:wq
+
+chmod u+x forced.sh
+./forced.sh
+
+cat /etc/leviathan_pass/leviathan7
+
+$$$$$$$$$$$$$$
+$$$ 777777 $$$
+$$$$$$$$$$$$$$
+
+ls -la
+cat CONGRATULATIONS
+
+-- Well guess I'm done then :)
 
 ** Passwords **
 leviathan0:leviathan0
@@ -70,5 +103,6 @@ leviathan2:ougahZi8Ta
 leviathan3:Ahdiemoo1j
 leviathan4:vuH0coox6m
 leviathan5:Tith4cokei
-leviathan6:
+leviathan6:UgaoFee4li
+leviathan7:ahy7MaeBo9
 
