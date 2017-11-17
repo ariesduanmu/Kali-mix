@@ -1,3 +1,10 @@
+.____              .___.__                                       .___
+|    |    __ __  __| _/|__| ____________   ____  ______ ____   __| _/
+|    |   |  |  \/ __ | |  |/  ___/\____ \ /  _ \/  ___// __ \ / __ | 
+|    |___|  |  / /_/ | |  |\___ \ |  |_> >  <_> )___ \\  ___// /_/ | 
+|_______ \____/\____ | |__/____  >|   __/ \____/____  >\___  >____ | 
+        \/          \/         \/ |__|              \/     \/     \/ 
+
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 $$ cd C:\Program Files\PuTTY                                                    $$
 $$ putty.exe $ssh [level]@leviathan.labs.overthewire.org -P 2223 -pw [password] $$
@@ -75,12 +82,14 @@ ltrace ./leviathan6 0000
 mkdir /tmp/levi6 && touch /tmp/levi6/forced.sh && cd /tmp/levi6
 vi forced.sh
 
---#!/bin/bash
---for i in {0000..9999}
---do
---    ~/leviathan6 $i
---done
---[esc]:wq
+[i]
+$$ #!/bin/bash
+$$ for i in {0000..9999}
+$$ do
+$$     ~/leviathan6 $i
+$$ done
+[esc]
+[:wq]
 
 chmod u+x forced.sh
 ./forced.sh
