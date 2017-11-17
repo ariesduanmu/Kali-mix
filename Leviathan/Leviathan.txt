@@ -7,26 +7,34 @@ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 $$$$$$$$$$$$$$
 $$$ 000000 $$$
 $$$$$$$$$$$$$$
+
 ls -a
 grep leviathan1 .backup/bookmarks.html
 
 $$$$$$$$$$$$$$
 $$$ 111111 $$$
 $$$$$$$$$$$$$$
+
 ls -a
 ltrace ./check
-sex
+ -- sex
 
 $$$$$$$$$$$$$$
 $$$ 222222 $$$
 $$$$$$$$$$$$$$
-mkdir /tmp/ludis && touch /tmp/ludis/testfile.txt
-cd /tmp/ludis/
+
+mkdir /tmp/ludis && touch /tmp/ludis/testfile.txt && cd /tmp/ludis/
 ltrace ~/printfile testfile.txt
--- Acces -- && -- Print -- ?
+?? -- Acces -- && -- Print -- ??
+rm  testfile.txt
+
+touch password\ testfile.txt
+ln -s /etc/leviathan_pass/leviathan3 /tmp/ludis/password
+~/printfile "password testfile.txt"
 
 
 ** Passwords **
 leviathan0:leviathan0
 leviathan1:rioGegei8m
 leviathan2:ougahZi8Ta
+leviathan3:Ahdiemoo1j
