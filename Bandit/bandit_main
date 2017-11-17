@@ -43,7 +43,7 @@ my @aps = available_passwords;
 add_first_userpass;
 
 while(1){
-	print "Which password you want to get, from '$aps[0]' to '$aps[$#aps]'.\nEnter number from 1 to ".($#aps + 1).":";
+    print "Which password you want to get, from '$aps[0]' to '$aps[$#aps]'.\nEnter number from 1 to ".($#aps + 1).":";
     my $opt = <>;
     while ($opt > ($#aps + 1) || $opt < 1){
 	    print "Enter number from 1 to ".($#aps + 1).":";

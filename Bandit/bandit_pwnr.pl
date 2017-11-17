@@ -1,17 +1,10 @@
-#!/usr/bin/perl
-
 use strict;
 use warnings;
 
 use Net::SSH::Perl;
+use lib qw("C:/Dwimperl/perl/site/lib");
 
-my $hostname = "bandit.labs.overthewire.org";
-my $username = "bandit0";
-my $password = "bandit0";
-my $port = "2220";
-my $command = "";
-
-
+my ($hostname, $username, $password, $port, $command) = ("bandit.labs.overthewire.org", "bandit0", "bandit0", "2220", "");
 
 sub next_level {
     my ($user) = @_;
@@ -28,19 +21,17 @@ sub bandit_level {
     return $new_pass;
 }
 
-
 sub read_file {
     my %hash;
     open CONFIG, "commands.txt" or die;
     while (my $line = <CONFIG>) {
         chomp $line;
-        my ($lvl, $cmd) = split /:/, $line;
+        my ($lvl, $cmd) = split /\:/, $line;
         $hash{$lvl} = $cmd;
     }
     close CONFIG;
     return %hash;
 }
-
 
 my %hash = read_file;
 my $bandit_count = scalar(keys %hash);

@@ -1,0 +1,32 @@
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$ cd C:\Program Files\PuTTY                                                    $$
+$$ putty.exe $ssh [level]@leviathan.labs.overthewire.org -P 2223 -pw [password] $$
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+** Commands **
+$$$$$$$$$$$$$$
+$$$ 000000 $$$
+$$$$$$$$$$$$$$
+ls -a
+grep leviathan1 .backup/bookmarks.html
+
+$$$$$$$$$$$$$$
+$$$ 111111 $$$
+$$$$$$$$$$$$$$
+ls -a
+ltrace ./check
+sex
+
+$$$$$$$$$$$$$$
+$$$ 222222 $$$
+$$$$$$$$$$$$$$
+mkdir /tmp/ludis && touch /tmp/ludis/testfile.txt
+cd /tmp/ludis/
+ltrace ~/printfile testfile.txt
+-- Acces -- && -- Print -- ?
+
+
+** Passwords **
+leviathan0:leviathan0
+leviathan1:rioGegei8m
+leviathan2:ougahZi8Ta
