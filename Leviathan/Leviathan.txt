@@ -15,7 +15,7 @@ $$$$$$$$$$$$$$
 $$$ 111111 $$$
 $$$$$$$$$$$$$$
 
-ls -a
+ls -la
 ltrace ./check
  -- sex
 
@@ -23,6 +23,8 @@ $$$$$$$$$$$$$$
 $$$ 222222 $$$
 $$$$$$$$$$$$$$
 
+ls -la
+./printfile printfile
 mkdir /tmp/ludis && touch /tmp/ludis/testfile.txt && cd /tmp/ludis/
 ltrace ~/printfile testfile.txt
 ?? -- Acces -- && -- Print -- ??
@@ -32,9 +34,41 @@ touch password\ testfile.txt
 ln -s /etc/leviathan_pass/leviathan3 /tmp/ludis/password
 ~/printfile "password testfile.txt"
 
+$$$$$$$$$$$$$$
+$$$ 333333 $$$
+$$$$$$$$$$$$$$
+
+ls -la
+ltrace ./level3
+ -- snlprintf
+
+whoami
+cat /etc/leviathan_pass/leviathan4
+
+$$$$$$$$$$$$$$
+$$$ 444444 $$$
+$$$$$$$$$$$$$$
+
+ls -la
+cd .trash
+ls -la
+./bin
+-- 01010100 01101001 01110100 01101000 00110100 01100011 01101111 01101011 01100101 01101001 00001010
+
+echo "01010100 01101001 01110100 01101000 00110100 01100011 01101111 01101011 01100101 01101001 00001010" | perl -lape '$_=pack"(B8)*",@F'
+
+$$$$$$$$$$$$$$
+$$$ 555555 $$$
+$$$$$$$$$$$$$$
+
+
 
 ** Passwords **
 leviathan0:leviathan0
 leviathan1:rioGegei8m
 leviathan2:ougahZi8Ta
 leviathan3:Ahdiemoo1j
+leviathan4:vuH0coox6m
+leviathan5:Tith4cokei
+leviathan6:
+
