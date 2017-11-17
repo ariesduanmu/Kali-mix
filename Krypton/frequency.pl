@@ -36,16 +36,15 @@ sub count_occurence {
 
 sub decrypt {
     my (%text_freq) = @_;
-    my %key;
     my @text = ();
 
     foreach my $name ( sort { $text_freq{$b} <=> $text_freq{$a} } keys %text_freq ) {
         push @text, $name;
     }
 
-    # What is wrong here?
-    # I start to like perl :)
-    @key{@text} = @ENGLISH_FREQ;
+    # This line is wrong... ?
+    # Getting 52 key length ugh, tired now... Maybe fix tomorrow.
+    my %key = map { $text[$_] => $ENGLISH_FREQ[$_] } (0 .. $#text);    
 
     foreach (split //, $ENCRYPTED_STRING) {
         print "$key{$_}";
