@@ -34,28 +34,28 @@ sub count_occurence {
     return %frequency;
 }
 
-sub decrypt {
+sub get_key {
     my (%text_freq) = @_;
     my @text = ();
-
     foreach my $name ( sort { $text_freq{$b} <=> $text_freq{$a} } keys %text_freq ) {
         push @text, $name;
     }
-
-    # This line is wrong... ?
-    # Getting 52 key length ugh, tired now... Maybe fix tomorrow.
-    my %key = map { $text[$_] => $ENGLISH_FREQ[$_] } (0 .. $#text);    
-
-    foreach (split //, $ENCRYPTED_STRING) {
-        print "$key{$_}";
-    }
-    say "";
+    return map { $text[$_] => $ENGLISH_FREQ[$_] } (0 .. $#text);
 }
 
 foreach (@FILENAMES) {
+    # Read the text
     my $text = read_file($_);
     $text =~ s/\s+//g;
-    decrypt(count_frequency($text));
+
+    # Perform Letter Frequency Analysis
+    my %cypher_key = get_key(count_frequency($text));
+
+    # Try to decrypt the text
+    foreach (split //, $ENCRYPTED_STRING) {
+        print "$cypher_key{$_}";
+    }
+    say "";
 }
 
 
