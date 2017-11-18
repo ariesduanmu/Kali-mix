@@ -2,10 +2,8 @@
 
 use strict;
 use warnings;
-use feature 'say';
 
-
-use File::Slurp;
+use Path::Tiny 'path';
 
 
 my @FILENAMES = ("found1", "found2", "found3");
@@ -15,47 +13,38 @@ my @ENGLISH_FREQ = ("E", "T", "A", "O", "I", "N", "S",
                     "W", "F", "G", "Y", "P", "B", "V", 
                     "K", "J", "X", "Q", "Z");
 
-my $ENCRYPTED_STRING = read_file("krypton4");
-$ENCRYPTED_STRING =~ s/\s+//g;
-
-
-sub count_frequency {
-    my ($string) = @_;
-    my %occurences = count_occurence($string);
-    return map { $_ => $occurences{$_} / length($string) } keys %occurences;
-}
-
 sub count_occurence {
     my ($string) = @_;
     my %frequency = map { $_ => 0 } @LETTERS;
-    foreach (split //, $string) {
-        $frequency{$_}++;
+
+    foreach my $letter (split //, $string) {
+        $frequency{$letter}++;
     }
+
     return %frequency;
 }
 
-sub get_key {
-    my (%text_freq) = @_;
-    my @text = ();
-    foreach my $name ( sort { $text_freq{$b} <=> $text_freq{$a} } keys %text_freq ) {
-        push @text, $name;
-    }
-    return map { $text[$_] => $ENGLISH_FREQ[$_] } (0 .. $#text);
+sub get_key_hash {
+    my (%frequency) = @_;
+    my @letters = sort { $frequency{$b} <=> $frequency{$a} } keys %frequency;
+
+    return map { $letters[$_] => $ENGLISH_FREQ[$_] } 0 .. $#letters;
 }
 
-foreach (@FILENAMES) {
-    # Read the text
-    my $text = read_file($_);
-    $text =~ s/\s+//g;
+sub count_frequency_files {
+    my %total_frequency = map { $_ => 0 } @LETTERS;
 
-    # Perform Letter Frequency Analysis
-    my %cypher_key = get_key(count_frequency($text));
+    foreach my $filename (@FILENAMES) {
+        my $text = path($filename)->slurp =~ s/\s+//gr;
+        my %frequency = count_occurence($text);
 
-    # Try to decrypt the text
-    foreach (split //, $ENCRYPTED_STRING) {
-        print "$cypher_key{$_}";
+        $total_frequency{$_} += $frequency{$_} for keys %frequency; 
     }
-    say "";
+
+    return %total_frequency;
 }
 
+my %cypher_key = get_key_hash(count_frequency_files());
+print $cypher_key{$_} for split //, path("krypton4")->slurp =~ s/\s+//gr;
+print "\n";
 
