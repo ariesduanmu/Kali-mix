@@ -20,6 +20,8 @@ def decrypt():
 	key = get_key()
 	k5 = read_file("krypton5")
 	return ''.join([plain_t(k5[i], key[i%6]) for i in range(len(k5))])
-print(decrypt())
+
+if __name__ == "__main__":
+	print(decrypt())
 
 
