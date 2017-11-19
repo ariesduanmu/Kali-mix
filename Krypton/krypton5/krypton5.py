@@ -10,7 +10,7 @@ def get_key():
 
 	strs = [[f1[j] for j in range(len(f1)) if j % 6 == i]\
 	         + [f2[j] for j in range(len(f2)) if j % 6 == i] for i in range(6)]
-	key = [max([(sum([englishLetterFreq[plain_t(j,k)] for j in strs[i]]), k) \
+	key = [max([(sum([englishLetterFreq[plain_t(s,k)] for s in strs[i]]), k) \
 		         for k in range(26)],\
 		         key = lambda x: x[0])[1] \
 	       for i in range(6)]
@@ -18,11 +18,8 @@ def get_key():
 
 def decrypt():
 	key = get_key()
-	plaintext = ""
 	k5 = read_file("krypton5")
-	for i in range(len(k5)):
-		plaintext += plain_t(k5[i], key[i%6])
-	return plaintext
+	return ''.join([plain_t(k5[i], key[i%6]) for i in range(len(k5))])
 print(decrypt())
 
 
