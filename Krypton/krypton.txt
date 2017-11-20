@@ -85,4 +85,6 @@ vi freq.py
 krypton1:KRYPTONISGREAT
 krypton2:ROTTEN
 krypton3:CAESARISEASY
-krypton4:
+krypton4:BRUTE
+krypton5:CLEARTEXT
+krypton6:RANDOM
