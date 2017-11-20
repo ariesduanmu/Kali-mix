@@ -88,3 +88,4 @@ krypton3:CAESARISEASY
 krypton4:BRUTE
 krypton5:CLEARTEXT
 krypton6:RANDOM
+krypton7:LFSRISNOTRANDOM
