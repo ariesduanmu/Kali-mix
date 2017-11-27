@@ -20,6 +20,7 @@ main:
     push $0x6e69622f
 
     #TODO:I don't know how to pad "cat", as it pad "/sh" with "/" but this don't work for "cat"
+    # I think cat is called by "bin/cat"
 
     #/etc/narnia_pass/narnia3
     #push $0x3361696E
