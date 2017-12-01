@@ -8,9 +8,9 @@ most_common_triplets = ['THE','EST','FOR','AND','HIS','ENT','THA']
 def read_file(filename):
 	return open(filename, 'r').read().strip('\n').replace(' ','')
 '''
-   ********************************
-   *I haven't used these functions*
-   ********************************
+   ***********************************
+   *They are work for Vigebere cipher*
+   ***********************************
 '''
 
 def gcd(a,b):
@@ -20,7 +20,7 @@ def gcd(a,b):
 		b = tmp
 	return a
 
-
+# One way to findout the cipher length
 def kasiski(text):
 	dic = {}
 	for i in range(len(text)-2):
@@ -44,11 +44,6 @@ def kasiski(text):
 		g = gcd(g,c[i])
 	return g
 
-'''
-   ******************************
-   *Haven't used stopped in here*
-   ******************************
-'''
 
 def letter_frequence(text):
 	fq = [0 for _ in range(26)]
@@ -57,7 +52,7 @@ def letter_frequence(text):
 		fq[i] += 1
 	return fq
 
-
+#Second way for cipher length
 def coincidence(text, m):
 	c_index = lambda frequences, n: \
 	          sum(frequences[i] * (frequences[i] - 1) for i in range(26)) / (n * (n - 1))
@@ -80,7 +75,7 @@ def deviation(indexs):
 	return sum([pow((i - magic_num),2) for i in indexs]) / len(indexs)
 
 if __name__ == "__main__":
-	text = read_file('found1')
+	text = read_file('test')
 	print(coincidence(text,20))
 
 
