@@ -7,7 +7,7 @@
 
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 $$ cd C:\Program Files\PuTTY                                                    $$
-$$ putty.exe $ssh [level]@krypton.labs.overthewire.org -P 2222 -pw [password] $$
+$$ putty.exe $ssh [level]@krypton.labs.overthewire.org -p 2222 -pw [password] $$
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 ** Commands **

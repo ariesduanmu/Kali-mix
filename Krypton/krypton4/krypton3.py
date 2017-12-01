@@ -5,61 +5,82 @@ most_common_pairs = ['TH', 'EA', 'OF', 'TO', 'IN', 'IT', 'IS', 'BE', 'AS', 'SO',
 most_common_repeat = ['SS', 'EE', 'TT', 'FF', 'LL', 'MM', 'OO']
 most_common_triplets = ['THE','EST','FOR','AND','HIS','ENT','THA']
 
-
 def read_file(filename):
 	return open(filename, 'r').read().strip('\n').replace(' ','')
-strs = read_file("found1")+read_file("found2")+read_file("found3")+read_file("krypton4")
+'''
+   ********************************
+   *I haven't used these functions*
+   ********************************
+'''
+
+def gcd(a,b):
+	while b > 0:
+		tmp = a % b
+		a = b
+		b = tmp
+	return a
 
 
-# letter frequence
-letter_frequence = [[0, chr(ord('A') + i)] for i in range(26)]
-for s in strs:
-	if s != " ":
-		letter_frequence[ord(s) - ord('A')][0] += 1
-
-letter_frequence = sorted(letter_frequence, key = lambda x: -x[0])
-
-# pais
-pairs = {}
-repeat_pairs = {}
-for i in range(len(strs)-1):
-	s = strs[i:i+2]
-	if s[0] == s[1]:
-		if s in repeat_pairs:
-			repeat_pairs[s] += 1
-		else:
-			repeat_pairs[s] = 1
+def kasiski(text):
+	dic = {}
+	for i in range(len(text)-2):
+		for j in range(i+3,len(text)):
+			ciphertext_piece = text[i:j]
+			if ciphertext_piece in dic:
+				dic[ciphertext_piece] += [i]
+			else:
+				dic[ciphertext_piece] = [i]
+	ciphertext_pieces = sorted([[k, dic[k]] for k in dic], key=lambda x: -len(x[1]))
+	print(ciphertext_pieces[:10])
+	c = ciphertext_pieces[0][1]
+	if c[0] == 0:
+		g = c[1]
+		k = 2
 	else:
-		if s in pairs:
-			pairs[s] += 1
-		else:
-			pairs[s] = 1
-pairs_frequence = sorted([(k, pairs[k]) for k in pairs], key = lambda x: -x[1])
-repeat_pairs_frequence = sorted([(k, repeat_pairs[k]) for k in repeat_pairs], key = lambda x: -x[1])
+		g = c[0]
+		k = 1
 
-#triplets
-triplets = {}
-for i in range(len(strs)-2):
-	s = strs[i:i+3]
-	if s in triplets:
-		triplets[s] += 1
-	else:
-		triplets[s] = 1
-triplets_frequence = sorted([(k, triplets[k]) for k in triplets], key = lambda x: -x[1])
+	for i in range(k,len(c)):
+		g = gcd(g,c[i])
+	return g
 
-#four
-fours = {}
-for i in range(len(strs)-3):
-	s = strs[i:i+4]
-	if s in fours:
-		fours[s] += 1
-	else:
-		fours[s] = 1
-fours_frequence = sorted([(k, fours[k]) for k in fours], key = lambda x: -x[1])
+'''
+   ******************************
+   *Haven't used stopped in here*
+   ******************************
+'''
 
-print(letter_frequence)
-print(pairs_frequence[:19])
-print(repeat_pairs_frequence[:14])
-print(triplets_frequence[:14])
-print(fours_frequence[:10])
+def letter_frequence(text):
+	fq = [0 for _ in range(26)]
+	for t in text:
+		i = ord(t.upper()) - ord('A')
+		fq[i] += 1
+	return fq
+
+
+def coincidence(text, m):
+	c_index = lambda frequences, n: \
+	          sum(frequences[i] * (frequences[i] - 1) for i in range(26)) / (n * (n - 1))
+	deviations = []
+	for i in range(1,m+1):
+		t = [text[j::i] for j in range(i)]
+		indexs = []
+		for j in range(len(t)):
+			fq = letter_frequence(t[j])
+			indexs.append(c_index(fq, len(t[j])))
+		deviations.append([i,deviation(indexs)])
+		print(indexs)
+	
+	return min(deviations, key = lambda x: x[1])[0]
+
+
+def deviation(indexs):
+	# this magic_num is in normal English the frquences squar of letters
+	magic_num = 0.065
+	return sum([pow((i - magic_num),2) for i in indexs]) / len(indexs)
+
+if __name__ == "__main__":
+	text = read_file('found1')
+	print(coincidence(text,20))
+
 
