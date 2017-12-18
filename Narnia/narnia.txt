@@ -7,7 +7,7 @@
 
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 $$ cd C:\Program Files\PuTTY                                                    $$
-$$ putty.exe $ssh [level]@narnia.labs.overthewire.org -P 2226 -pw [password]    $$
+$$ putty.exe $ssh [level]@narnia.labs.overthewire.org -p 2226 -pw [password]    $$
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 
