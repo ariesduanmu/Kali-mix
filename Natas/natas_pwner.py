@@ -303,7 +303,7 @@ def next_user(user):
     old_digit = ''.join(filter(str.isdigit, user))
     return user.replace(old_digit, str(int(old_digit)+1))
 
-if __name__ == '__main__':    
+if __name__ == '__main__':
     # Starting point
     username = 'natas0'
     password = 'natas0'
@@ -339,7 +339,8 @@ if __name__ == '__main__':
                  'natas27.natas.labs.overthewire.org/': natas27,
                  'natas28.natas.labs.overthewire.org/': natas28,
                  'natas29.natas.labs.overthewire.org/': natas29,
-                 'natas30.natas.labs.overthewire.org/': natas30}
+                 'natas30.natas.labs.overthewire.org/': natas30,
+                 'natas31.natas.labs.overthewire.org/': natas31}
 
     for _ in range(len(dispenser)):
         url = next_level(username, password)        
