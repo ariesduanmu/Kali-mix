@@ -1,3 +1,5 @@
+use DBI;
+
 {
     package MyWebServer;
 
@@ -34,7 +36,7 @@
 	my $cgi  = shift;
 	return if !ref $cgi;
 	
-	my $dbh = DBI->connect( "DBI:mysql:natas30","natas30", "toor", {'RaiseError' => 1});
+	my $dbh = DBI->connect( "DBI:mysql:natas30","root", "toor", {'RaiseError' => 1});
 	my $query="Select * FROM users where username =".$dbh->quote(param('username')) . " and password =".$dbh->quote(param('password')); 
 	my $sth = $dbh->prepare($query);
 	$sth->execute();
