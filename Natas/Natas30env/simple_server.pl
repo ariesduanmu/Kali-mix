@@ -37,7 +37,18 @@ use DBI;
 	return if !ref $cgi;
 	
 	my $dbh = DBI->connect( "DBI:mysql:natas30","root", "toor", {'RaiseError' => 1});
-	my $query="Select * FROM users where username =".$dbh->quote(param('username')) . " and password =".$dbh->quote(param('password')); 
+	my $username = $cgi->param('username');
+	my $quoted_username =  $dbh->quote($username);
+	my $password = $cgi->param('password');
+	my $quoted_password =  $dbh->quote($password);	
+	my $query="Select * FROM users where username =" . $quoted_username . " and password =" . $quoted_password; 
+	
+	########################################################
+	print 'Parameters: ' . $username . '\m' . $password . '\n';
+	print 'Quoted params: ' . $quoted_username . '\m' . $quoted_password . '\n';
+	print 'Query string:' . $query . '\n';
+	########################################################
+	
 	my $sth = $dbh->prepare($query);
 	$sth->execute();
 	my $ver = $sth->fetch();
@@ -52,17 +63,9 @@ use DBI;
 		  $cgi->start_html("FAIL"),
 		  $cgi->end_html;
 	}
+	
 	$sth->finish();
 	$dbh->disconnect();
-	
-	my $user = $cgi->param('username');
-	my $pass = $cgi->param('password');
-	
-	print $cgi->header,
-	      $cgi->start_html("Hello"),
-	      $cgi->h1("Hello $user!"),
-	      $cgi->hl("Your supplied Password = $pass"),
-	      $cgi->end_html;
     }
 }
 
