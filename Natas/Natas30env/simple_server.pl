@@ -59,9 +59,11 @@ use warnings;
 	
 	my $dbh = DBI->connect( "DBI:mysql:natas30","root", "toor", {'RaiseError' => 1});
 	my $username = $cgi->param('username');
+	print '$username';
 	my $quoted_username =  $dbh->quote($username);	
 	my $password = $cgi->param('password');
-	my $quoted_password =  $dbh->quote($password);	
+	#try this
+	my $quoted_password =  $dbh->quote("'lol' or 1", DBI::SQL_INTEGER);	
 	
 	my $query="Select * FROM users where username =" . $quoted_username . " and password =" . $quoted_password; 
 	
