@@ -59,18 +59,11 @@ use warnings;
 	
 	my $dbh = DBI->connect( "DBI:mysql:natas30","root", "toor", {'RaiseError' => 1});
 	my $username = $cgi->param('username');
-	my $quoted_username =  $dbh->quote($username);
-	
+	my $quoted_username =  $dbh->quote($username);	
 	my $password = $cgi->param('password');
 	my $quoted_password =  $dbh->quote($password);	
 	
 	my $query="Select * FROM users where username =" . $quoted_username . " and password =" . $quoted_password; 
-	
-	################################################################################
-	# print 'Parameters: ' . $username . '\m' . $password . '\n';                  #
-	# print 'Quoted params: ' . $quoted_username . '\m' . $quoted_password . '\n'; #
-	# print 'Query string:' . $query . '\n';                                       #
-	################################################################################
 	
 	my $sth = $dbh->prepare($query);
 	$sth->execute();
@@ -78,7 +71,7 @@ use warnings;
 	if ($ver){
 	    print $cgi->header,
 		  $cgi->start_html("WIN!"),
-		  $cgi->h1("$ver"),
+		  $cgi->h1(@$ver),
 		  $cgi->h2("You succeeded with query " . $query),
 		  $cgi->h2("Suplied parameters U:" . $username . " P:" . $password),
 		  $cgi->h2("Quoted parameters U:" . $quoted_username . " P:" . $quoted_password),
