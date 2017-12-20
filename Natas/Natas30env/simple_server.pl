@@ -28,10 +28,28 @@ use warnings;
 	} else {
 	    print "HTTP/1.0 404 Not found\r\n";
 	    print $cgi->header,
-		  $cgi->start_html('Nothing here'),
-		  $cgi->h1('Move along sir'),
-		  $cgi->h2('You can got to localhost:8080/index.pl?username=user&password=pass'),
-		  $cgi->end_html;
+		      $cgi->start_html('Nothing here'),
+		      $cgi->h1('Move along sir'),
+		      $cgi->h2('You can got to localhost:8080/index.pl?username=user&password=pass'),
+			  $cgi->start_form(
+				-method=>'POST',
+				-action=>'/index.pl',
+				),
+			  $cgi->p('Username'),
+			  $cgi->textfield(
+			  	-name=>'username',
+			  	),
+			  $cgi->p('Password'),
+			  $cgi->textfield(
+			  	-name=>'password',
+			  	-type=>'password',
+			  	),
+			  $cgi->submit(
+			  	-name=>'submit',
+			  	-value=>'login',
+			  	),
+			  $cgi->end_form;
+		 
 	}
     }
 
