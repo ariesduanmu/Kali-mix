@@ -1,6 +1,3 @@
-use strict;
-use warnings;
-
 {
     package MyWebServer;
 
@@ -36,6 +33,25 @@ use warnings;
     sub resp_index {
 	my $cgi  = shift;
 	return if !ref $cgi;
+	
+	my $dbh = DBI->connect( "DBI:mysql:natas30","natas30", "toor", {'RaiseError' => 1});
+	my $query="Select * FROM users where username =".$dbh->quote(param('username')) . " and password =".$dbh->quote(param('password')); 
+	my $sth = $dbh->prepare($query);
+	$sth->execute();
+	my $ver = $sth->fetch();
+	if ($ver){
+	    print $cgi->header,
+		  $cgi->start_html("WIN!"),
+		  $cgi->h1("$ver"),
+		  $cgi->end_html;
+	}
+	else{
+	    print $cgi->header,
+		  $cgi->start_html("FAIL"),
+		  $cgi->end_html;
+	}
+	$sth->finish();
+	$dbh->disconnect();
 	
 	my $user = $cgi->param('username');
 	my $pass = $cgi->param('password');
