@@ -7,7 +7,7 @@ use warnings;
 	 use base qw(HTTP::Server::Simple::CGI);
 	 
 	 my %dispatch = (
-	     '/natas30' => \&resp_natas,
+	     '/test' => \&resp_natas,
 	     '/hello' => \&resp_hello,
 	     # Can add more Paths here
 	 );
@@ -36,7 +36,7 @@ use warnings;
 	     return if !ref $cgi;
 	     my $who = $cgi->param('name');
 	     print $cgi->header,
-	     $cgi->start_html("Natas30"),
+	     $cgi->start_html("Test"),
 	     $cgi->h1("Something here $who!"),
 	     $cgi->end_html;
 	 }	 
