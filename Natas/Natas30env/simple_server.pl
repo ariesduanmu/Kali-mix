@@ -1,13 +1,16 @@
-use DBI;
+use strict;
+use warnings;
+
 
 {
     package MyWebServer;
 
+    use DBI;
     use HTTP::Server::Simple::CGI;
     our @ISA = qw(HTTP::Server::Simple::CGI);
 
     my %dispatch = (
-	'/index.cgi' => \&resp_index,
+	'/index.pl' => \&resp_index,
 	# ...
     );
 
@@ -27,7 +30,7 @@ use DBI;
 	    print $cgi->header,
 		  $cgi->start_html('Nothing here'),
 		  $cgi->h1('Move along sir'),
-		  $cgi->h2('You can got to localhost:8080/index.cgi?username=user&password=pass'),
+		  $cgi->h2('You can got to localhost:8080/index.pl?username=user&password=pass'),
 		  $cgi->end_html;
 	}
     }
@@ -57,15 +60,14 @@ use DBI;
 	if ($ver){
 	    print $cgi->header,
 		  $cgi->start_html("WIN!"),
-		  $cgi->h1(qw{$ver}),
+		  $cgi->h1("$ver"),
 		  $cgi->h2("You succeeded with query " . $query),
 		  $cgi->h2("Suplied parameters U:" . $username . " P:" . $password),
 		  $cgi->h2("Quoted parameters U:" . $quoted_username . " P:" . $quoted_password),
 		  $cgi->end_html;
-	}
-	else{
+	} else{
 	    print $cgi->header,
-		  $cgi->start_html("FAIL"),
+		  $cgi->start_html("FAIL!"),
 		  $cgi->h2("You failed with query " . $query),
 		  $cgi->h2("Suplied parameters U:" . $username . " P:" . $password),
 		  $cgi->h2("Quoted parameters U:" . $quoted_username . " P:" . $quoted_password),
@@ -77,6 +79,5 @@ use DBI;
     }
 }
 
-# start the server on port 8080
 my $pid = MyWebServer->new(8080)->background();
 print "Use 'kill $pid' to stop server.\n";
