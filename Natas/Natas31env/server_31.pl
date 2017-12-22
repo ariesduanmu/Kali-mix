@@ -4,7 +4,7 @@ use warnings;
 use feature 'say';
 
 {
-    package MyWebServer;
+    package Natas31Clone;
 
     use DBI;
     use HTTP::Server::Simple::CGI;
@@ -13,7 +13,7 @@ use feature 'say';
     $ENV{'TMPDIR'}="WWWDIR/tmp/";
 
     my %dispatch = (
-        '/index.pl' => \&resp_index,
+        '/upload.pl' => \&resp_upload,
     );
 
     sub handle_request {
@@ -32,7 +32,7 @@ use feature 'say';
                   $cgi->start_html('Natas31'),
                   $cgi->h1('natas31'),
                   $cgi->start_multipart_form(
-                    -action=>'index.pl',
+                    -action=>'upload.pl',
                     -method=>'POST',
                     ),
                   $cgi->h2('CSV2HTML'),
@@ -53,7 +53,7 @@ use feature 'say';
 
     }
 
-    sub resp_index {
+    sub resp_upload {
         my $cgi = shift;
         return if !ref $cgi;
 
@@ -92,5 +92,5 @@ use feature 'say';
     }
 }
 
-my $pid = MyWebServer->new(8080)->background();
+my $pid = Natas31Clone->new(8080)->background();
 print "Use 'kill $pid' to stop server.\n";
