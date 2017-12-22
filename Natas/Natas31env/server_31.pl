@@ -61,31 +61,32 @@ use feature 'say';
               $cgi->start_html('Natas31'),
               $cgi->h2('Received:');
 
-        if ($cgi->upload('upload_file')) {
-            my $file = $cgi->param('upload_file');
-            print '<table class="sortable table table-hover table-striped">';
-            $i=0;
-            while (<$file>) {
-                my @elements=split /,/, $_;
+        my $file = $cgi->param('upload_file');
+        say '<table class="sortable table table-hover table-striped">';
+        my $i=0;
 
-                if($i==0){ # header
-                    print "<tr>";
-                    foreach(@elements){
-                        print "<th>".$cgi->escapeHTML($_)."</th>";   
-                    }
-                    print "</tr>";
+        open my $fh, "<", $file or die "could not open $file: $!";
+        while (<$fh>) {
+            my @elements=split /,/, $_;
+
+            if($i==0){ # header
+                say "<tr>";
+                foreach(@elements){
+                    say "<th>".$_."</th>";   
                 }
-                else{ # table content
-                    print "<tr>";
-                    foreach(@elements){
-                        print "<td>".$cgi->escapeHTML($_)."</td>";   
-                    }
-                    print "</tr>";
-                }
-                $i+=1;
+                say "</tr>";
             }
-            print '</table>';
+            else{ # table content
+                say "<tr>";
+                foreach(@elements){
+                    say "<td>".$_."</td>";   
+                }
+                say "</tr>";
+            }
+            $i+=1;
         }
+        say '</table>';
+        
 
     }
 }
