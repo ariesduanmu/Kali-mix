@@ -65,7 +65,7 @@ use feature 'say';
             print $cgi->h2('Recieved ' . $file);
             
             # Not a nice table as on Natas31 though
-            print $cgi->table( { -class => 'sortable table table-hover table-striped'} );
+            print '<table class="sortable table table-hover table-striped">';
             my $i=0;
             while (<$file>) {
                 my @elements=split /,/, $_;
