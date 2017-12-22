@@ -1,0 +1,2 @@
+Error: operand size mismatch fot int
+\nWhat architecture are you writing for x86 Unix or still DOS :p
