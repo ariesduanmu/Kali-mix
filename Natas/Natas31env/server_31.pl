@@ -73,7 +73,9 @@ use feature 'say';
                 if($i==0){ # header
                     print "<tr>";
                     foreach(@elements){
-                        print "<th>".$cgi->escapeHTML($_)."</th>";   
+                        # print "<th>".$cgi->escapeHTML($_)."</th>";
+                        # I have removed the escapeHTML here, to get my errors
+                        print "<th>".$cgi->$_."</th>";   
                     }
                     print "</tr>";
                 }
