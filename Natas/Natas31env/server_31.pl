@@ -57,40 +57,40 @@ use feature 'say';
         my $cgi = shift;
         return if !ref $cgi;
 
-        print $cgi->header,
-              $cgi->start_html('Natas31'),
-              $cgi->h2('Received:');
+        print $cgi->header;
+        print $cgi->start_html('Natas31');
 
-        my $file = $cgi->param('upload_file');
-        say '<table class="sortable table table-hover table-striped">';
-        my $i=0;
+        if ($cgi->upload('upload_file')) {
+            my $file = $cgi->param('upload_file');
+            print $cgi->h2('Recieved ' . $file);
+            
+            # Not a nice table as on Natas31 though
+            print $cgi->table( { -class => 'sortable table table-hover table-striped'} );
+            my $i=0;
+            while (<$file>) {
+                my @elements=split /,/, $_;
 
-        open my $fh, "<", $file or die "could not open $file: $!";
-        while (<$fh>) {
-            my @elements=split /,/, $_;
-
-            if($i==0){ # header
-                say "<tr>";
-                foreach(@elements){
-                    say "<th>".$_."</th>";   
+                if($i==0){ # header
+                    print "<tr>";
+                    foreach(@elements){
+                        print "<th>".$cgi->escapeHTML($_)."</th>";   
+                    }
+                    print "</tr>";
                 }
-                say "</tr>";
-            }
-            else{ # table content
-                say "<tr>";
-                foreach(@elements){
-                    say "<td>".$_."</td>";   
+                else{ # table content
+                    print "<tr>";
+                    foreach(@elements){
+                        print "<td>".$cgi->escapeHTML($_)."</td>";   
+                    }
+                    print "</tr>";
                 }
-                say "</tr>";
+                $i+=1;
             }
-            $i+=1;
+            print '</table>';
         }
-        say '</table>';
-        
-
+        print $cgi->end_html;
     }
 }
 
 my $pid = MyWebServer->new(8080)->background();
 print "Use 'kill $pid' to stop server.\n";
-
