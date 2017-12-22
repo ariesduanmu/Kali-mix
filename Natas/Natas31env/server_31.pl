@@ -1,4 +1,7 @@
+use strict;
+use warnings;
 
+use feature 'say';
 
 {
     package MyWebServer;
@@ -6,6 +9,8 @@
     use DBI;
     use HTTP::Server::Simple::CGI;
     our @ISA = qw(HTTP::Server::Simple::CGI);
+
+    $ENV{'TMPDIR'}="WWWDIR/tmp/";
 
     my %dispatch = (
         '/index.pl' => \&resp_index,
@@ -52,32 +57,35 @@
         my $cgi = shift;
         return if !ref $cgi;
 
-        $fh = $cgi->upload('upload_file');
-        $filename = $cgi->param('upload_file');
-
         print $cgi->header,
               $cgi->start_html('Natas31'),
-              $cgi->h2('Received:'),
-              $cgi->h2($filename),
-              $cgi->end_html;
+              $cgi->h2('Received:');
 
-        open (FILE1, "$fh"); 
-        open (FILE2, ">copy.txt"); 
+        if ($cgi->upload('upload_file')) {
+            my $file = $cgi->param('upload_file');
+            print '<table class="sortable table table-hover table-striped">';
+            $i=0;
+            while (<$file>) {
+                my @elements=split /,/, $_;
 
-        while ( read(FILE1,$file_contents,1024) ) { 
-          print FILE2 $file_contents; 
+                if($i==0){ # header
+                    print "<tr>";
+                    foreach(@elements){
+                        print "<th>".$cgi->escapeHTML($_)."</th>";   
+                    }
+                    print "</tr>";
+                }
+                else{ # table content
+                    print "<tr>";
+                    foreach(@elements){
+                        print "<td>".$cgi->escapeHTML($_)."</td>";   
+                    }
+                    print "</tr>";
+                }
+                $i+=1;
+            }
+            print '</table>';
         }
-
-        close (FILE1);
-        close (FILE2);
-
-        # if (defined $fh) {
-        #     my $io_handle = $fh->handle;
-        #     open (OUTFILE,'>/Users/liqin/Desktop/abc.txt');
-        #     while ($io_handle->read($buffer,1024)){
-        #         print OUTFILE $buffer;
-        #     }
-        # }
 
     }
 }
