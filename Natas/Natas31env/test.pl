@@ -1,9 +1,7 @@
 use strict;
 use warnings;
 
-@ARGV=( 'echo exploited|' );
-
-
+#run like this `perl test.pl "echo test|"`
 
 my $filehandle = "ARGV";
 

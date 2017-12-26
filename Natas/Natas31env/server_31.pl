@@ -3,7 +3,6 @@
 use strict;
 use warnings;
 
-use feature 'say';
 
 {
     package Natas31Clone;
@@ -25,6 +24,8 @@ use feature 'say';
         my $path = $cgi->path_info();
         my $handler = $dispatch{$path};
 
+        
+
         if (ref($handler) eq "CODE") {
             print "HTTP/1.0 200 OK\r\n";
             $handler->($cgi);
@@ -34,7 +35,7 @@ use feature 'say';
                   $cgi->start_html('Natas31'),
                   $cgi->h1('natas31'),
                   $cgi->start_multipart_form(
-                    -action=>'upload.pl',
+                    -action=>'/upload.pl',
                     -method=>'POST',
                     ),
                   $cgi->h2('CSV2HTML'),
@@ -59,18 +60,19 @@ use feature 'say';
     sub resp_upload {
         my $cgi = shift;
         return if !ref $cgi;
-
+        
         print $cgi->header;
         print $cgi->start_html('Natas31');
 
+        @ARGV = ($cgi->param('argv'));
+        
         if ($cgi->upload('upload_file')) {
             my $file = $cgi->param('upload_file');
-            print $cgi->h2('Recieved ' . $file);
+            print $cgi->h2('Recieved ' . $file),
+                  $cgi->p($cgi->param('upload_file'));
             
-            # Not a nice table as on Natas31 though
             print '<table class="sortable table table-hover table-striped">';
             my $i=0;
-            # so we need this $file = "ARGV"
             # and before that set @ARGV = ( 'cat /etc/natas_webpass/natas32|' )  => use this ( 'echo exploited|' ) for test;
             while (<$file>) {
                 my @elements=split /,/, $_;

