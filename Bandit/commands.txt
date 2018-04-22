@@ -3,9 +3,10 @@ bandit1:cat ./-
 bandit2:cat 'spaces in this filename'
 bandit3:cat inhere/.hidden
 bandit4:cat inhere/./-file07
-bandit5:cat inhere/./maybehere07/.file2
-bandit6:cat /var/lib/dpkg/info/bandit7.password
-bandit7:cat data.txt | grep millionth | sed -e 's/^millionth//'
+bandit5:find inhere -type f ! -executable -size 1033c -exec cat {} \; | sed -e 's/^\s*//'
+bandit6:find / -type f -user bandit7 -group bandit6 -size 33c -exec cat {} \; 2>/dev/null
+bandit7:cat data.txt | grep millionth | sed -e 's/^millionth\s*//'
 bandit8:cat data.txt | sort | uniq -u
-bandit9:strings data.txt | grep '=' | cut -d '=' -f11 | tail -c 36
-bandit10:base64 -d data.txt
+bandit9:strings data.txt | grep '=' | cut -d '=' -f11 | tail -c 33
+bandit10:cat data.txt | base64 -d | tail -c 33
+bandit11:cat data.txt | tr '[n-za-mN-ZA-M]' '[a-zA-Z]' | tail -c 33
