@@ -10,3 +10,14 @@ bandit8:cat data.txt | sort | uniq -u
 bandit9:strings data.txt | grep '=' | cut -d '=' -f11 | tail -c 33
 bandit10:cat data.txt | base64 -d | tail -c 33
 bandit11:cat data.txt | tr '[n-za-mN-ZA-M]' '[a-zA-Z]' | tail -c 33
+bandit12:mkdir /tmp/aries && cp data.txt /tmp/aries 
+bandit14:nc -w 3 localhost 30000 < /etc/bandit_pass/bandit14 | grep "^[0-9a-zA-Z]*$"
+bandit15:openssl s_client -connect localhost:30001 -ign_eof
+bandit16:nmap -sC -sV -p 31000-32000 localhost; openssl s_client -connect localhost:31790 -ign_eof
+bandit17:diff passwords.new passwords.old | grep "<"| tail -c 33
+bandit18:ssh -p 2220 bandit18@bandit.labs.overthewire.org cat readme
+bandit19:./bandit20-do cat /etc/bandit_pass/bandit20
+bandit20:./suconnect 4444(nc -lvp 4444)
+bandit21:cat /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
+bandit22:cat /tmp/8ca319486bfbbc3663ea0fbe81326349
+bandit23:echo "cat /etc/bandit_pass/bandit24 > /tmp/bandit24.txt" > password.sh; chmod 755 password.sh
