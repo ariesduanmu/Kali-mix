@@ -21,3 +21,4 @@ bandit20:./suconnect 4444(nc -lvp 4444)
 bandit21:cat /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
 bandit22:cat /tmp/8ca319486bfbbc3663ea0fbe81326349
 bandit23:echo "cat /etc/bandit_pass/bandit24 > /tmp/bandit24.txt" > password.sh; chmod 755 password.sh
+bandit26:(resize the windows be smaller haha) and `v` get in to `vim` then `Esc` + `:e /etc/bandit_pass/bandit26`
