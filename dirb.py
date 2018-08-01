@@ -1,7 +1,6 @@
-from multiprocessing import Process, Queue
-#import threading
+import threading
 from queue import Queue
-#from textwrap import dedent
+from textwrap import dedent
 import os
 import sys
 import re
@@ -14,7 +13,7 @@ queue = Queue()
 
 def create_workers(response_codes, number_of_threads):
     for _ in range(number_of_threads):
-        t = Process(target=work, args=(response_codes,))
+        t = threading.Thread(target=work, args=(response_codes,))
         t.daemon = True
         t.start()
 
@@ -31,6 +30,8 @@ def dir_buster(url, wordlist, file_extensions):
             for ext in file_extensions:
                 queue.put(urljoin(url, f"{word}.{ext}"))
     queue.join()
+
+
 
 def read_wordlist(wordlist):
     """yields a word from a \n delimited wordlist"""
