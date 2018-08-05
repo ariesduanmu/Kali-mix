@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#!/bin/usr/env python
+#!/bin/usr/env python3.6
 
 import sys
 import argparse
