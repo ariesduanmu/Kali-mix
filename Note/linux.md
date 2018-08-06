@@ -21,11 +21,12 @@
 ##Install gobuster
 * git clone https://github.com/OJ/gobuster.git
 * as /root is my GOPATH so these are in my /root/src
-* github.com/hashicorp/go-multierror  
-* github.com/OJ/gobuster  
-* github.com/satori/go.uuid  
+* github.com/hashicorp/go-multierror : https://github.com/hashicorp/go-multierror.git
+* github.com/OJ/gobuster : https://github.com/OJ/gobuster
+* github.com/satori/go.uuid : https://github.com/satori/go.uuid.git
 * golang.org/x/crypto  : https://github.com/golang/crypto.git
 * golang.org/x/sys : https://github.com/golang/sys.git
+* cd gobuster && go build
 
 ###Install go
 * wget https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz
