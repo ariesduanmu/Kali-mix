@@ -22,6 +22,13 @@ def safe_format(dangerous):
         return ""
     return fstring(dangerous)
 
+def this_is_eval(dangerous):
+    dangerous = re.sub(r"(__[\w]+__)|([\w\d]+\(\))|(\/0)|(\.system\(.*\))|(\.__globals__\[.*\])|(\.+)", "", dangerous)
+    if dangerous == "{}":
+        return ""
+    return eval(dangerous)
+
+
 class SafeFormatTest(unittest.TestCase):
     def test_global_acces(self):
         self.assertEqual(safe_format("{Error().__init__.__globals__[SECRET_GLOBAL]}"), "")
@@ -37,3 +44,5 @@ class SafeFormatTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
