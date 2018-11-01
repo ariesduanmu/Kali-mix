@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import requests
 import re
 import base64
 import wget
@@ -11,29 +10,8 @@ from fractions import gcd
 from bs4 import BeautifulSoup
 from numpy.linalg import solve
 
+from utils import _get, _post, parse_web_page
 
-session = requests.Session()
-
-cookie = dict(PHPSESSID="ulpueaidavnfq6phf8ji1d3kt5",
-              fusion_visited="TRUE",
-              fusion_user="107397.967cdfabd2cbdf1d12bdd8a1590ecf1c",
-              fusion_lastvisit="1540809182")
-
-def _get(url):
-    response = session.get(url, cookies=cookie)
-    return response.content
-
-def _post(url, data=None):
-    if data is None:
-        response = session.post(url, cookies=cookie)
-    else:
-        response = session.post(url, cookies=cookie, data=data)
-    return response.content
-
-def parse_web_page(content):
-    soup = BeautifulSoup(content, 'html.parser')
-    body = soup.find(class_="main-body")
-    return str(body)
 
 def challenge_1():
     base_url = "https://www.hellboundhackers.org/challenges/timed/timed1/index.php?b64="
