@@ -5,6 +5,8 @@ import base64
 import wget
 import hashlib
 import numpy as np
+from pyzbar import pyzbar
+from io import BytesIO
 from fractions import gcd
 from bs4 import BeautifulSoup
 from numpy.linalg import solve
@@ -118,7 +120,13 @@ def challenge_6():
     pass
 
 def challenge_7():
-    pass
+    url = "https://www.hellboundhackers.org/challenges/timed/timed7/barcode.php"
+    content = _get(url)
+    barcodes = pyzbar.decode(Image.open(BytesIO(content)))
+    if len(barcodes) > 0:
+        barcode = barcodes[0]
+        data = barcode.data.decode('utf-8')
+    
 
 def challenge_8():
     url = "https://www.hellboundhackers.org/challenges/timed/timed8/index.php"
