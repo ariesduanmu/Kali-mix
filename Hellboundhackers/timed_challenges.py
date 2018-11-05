@@ -1,37 +1,17 @@
 # -*- coding: utf-8 -*-
-import requests
 import re
 import base64
 import wget
 import hashlib
 import numpy as np
+from pyzbar import pyzbar
+from io import BytesIO
 from fractions import gcd
 from bs4 import BeautifulSoup
 from numpy.linalg import solve
 
+from utils import _get, _post, parse_web_page
 
-session = requests.Session()
-
-cookie = dict(PHPSESSID="ulpueaidavnfq6phf8ji1d3kt5",
-              fusion_visited="TRUE",
-              fusion_user="107397.967cdfabd2cbdf1d12bdd8a1590ecf1c",
-              fusion_lastvisit="1540809182")
-
-def _get(url):
-    response = session.get(url, cookies=cookie)
-    return response.content
-
-def _post(url, data=None):
-    if data is None:
-        response = session.post(url, cookies=cookie)
-    else:
-        response = session.post(url, cookies=cookie, data=data)
-    return response.content
-
-def parse_web_page(content):
-    soup = BeautifulSoup(content, 'html.parser')
-    body = soup.find(class_="main-body")
-    return str(body)
 
 def challenge_1():
     base_url = "https://www.hellboundhackers.org/challenges/timed/timed1/index.php?b64="
@@ -118,7 +98,13 @@ def challenge_6():
     pass
 
 def challenge_7():
-    pass
+    url = "https://www.hellboundhackers.org/challenges/timed/timed7/barcode.php"
+    content = _get(url)
+    barcodes = pyzbar.decode(Image.open(BytesIO(content)))
+    if len(barcodes) > 0:
+        barcode = barcodes[0]
+        data = barcode.data.decode('utf-8')
+    
 
 def challenge_8():
     url = "https://www.hellboundhackers.org/challenges/timed/timed8/index.php"
