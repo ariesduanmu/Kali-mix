@@ -49,8 +49,6 @@ class PyCat():
     def nc_listen(self):
         self.socket.bind((self.host, self.port))
         self.socket.listen(5)
-
-        # while True:
         client_socket, addr = self.socket.accept()
         if self.verbose:
             print(f"Receive client socket: {client_socket}")

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import socket
 
+
 class SocketConnection():
     def __init__(self, host, port):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -27,5 +28,4 @@ class SocketConnection():
 
     def close(self):
         self.sock.close()
-        self.sock.shutdown()
 
