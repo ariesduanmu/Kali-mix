@@ -2,7 +2,7 @@
 # @Author: ariesduanmu
 # @Date:   2018-12-10 20:10:49
 # @Last Modified by:   ariesduanmu
-# @Last Modified time: 2018-12-11 14:49:06
+# @Last Modified time: 2018-12-11 23:10:49
 import socket, ssl, os
 import datetime
 
@@ -66,6 +66,8 @@ def main():
 
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
     context.load_cert_chain(CERT, KEY)
+    # context.check_hostname = False
+    # context.verify_mode = ssl.CERT_NONE
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as sock:
         sock.bind((HOST, PORT))
