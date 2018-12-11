@@ -4,16 +4,25 @@ import subprocess
 import threading
 import socket
 import sys
+import ssl
 
 class PyCat():
-    def __init__(self, host, port, execute, listen, verbose):
+    def __init__(self, host, port, execute, listen, verbose, ssl_mode=True, keypath="server.key", certpath="server.crt"):
         self.buffer = b""
+        self.listen = listen
+        self.ssl = ssl_mode
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.keypath = keypath
+        self.certpath = certpath
+        if self.ssl and not self.listen:
+            self.socket = ssl.wrap_socket(self.socket,
+                                       ca_certs=self.certpath,
+                                       cert_reqs=ssl.CERT_REQUIRED)
         self.exec = execute
         self.port = port
         self.verbose = verbose
-        self.host = host if host else '0.0.0.0'
-        self.listen = listen
+        self.host = host or '0.0.0.0'
+        
         self.main_func = self.nc_listen if self.listen else self.nc_connect
         self.main()
 
@@ -56,6 +65,12 @@ class PyCat():
         client_thread.start()
 
     def client_handler(self, client_socket):
+        if self.ssl:
+            client_socket = ssl.wrap_socket(client_socket, 
+                                   server_side=True,
+                                   certfile=self.certpath,
+                                   keyfile=self.keypath)
+
         while True:
             cmd_buf = b""
             while b"\n" not in cmd_buf:
