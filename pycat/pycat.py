@@ -7,27 +7,24 @@ import sys
 import ssl
 
 class PyCat():
-    def __init__(self, host, port, execute, listen, verbose, ssl_mode=True, keypath="server.key", certpath="server.crt"):
+    def __init__(self, host, port, execute, listen, verbose, ssl_mode=True, keypath="server_2.key", certpath="server_2.crt", hostname="mysite.com"):
         self.buffer = b""
         self.listen = listen
         self.ssl = ssl_mode
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.keypath = keypath
         self.certpath = certpath
-        if self.ssl and not self.listen:
-            self.socket = ssl.wrap_socket(self.socket,
-                                       ca_certs=self.certpath,
-                                       cert_reqs=ssl.CERT_REQUIRED)
-        self.exec = execute
+        self.execute = execute
         self.port = port
         self.verbose = verbose
         self.host = host or '0.0.0.0'
+        self.hostname = hostname
         
         self.main_func = self.nc_listen if self.listen else self.nc_connect
         self.main()
 
     def exit(self):
-        self.socket.close()
+        pass
+        # self.socket.close()
         # self.socket.shutdown(socket.SHUT_RDWR)
 
     def read(self, length=1024):
@@ -35,42 +32,66 @@ class PyCat():
 
     def nc_connect(self):
         try:
-            self.socket.connect((self.host, self.port))
-            while True:
-                buf = input("Input: ")
-                buf += "\n"
-                self.socket.send(buf.encode("utf-8"))
+            context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+            context.load_verify_locations(self.certpath)
 
-                recv_len = 1
-                response = b""
-                while recv_len:
-                    data = self.socket.recv(4096)
-                    recv_len = len(data)
-                    response += data
-                    if recv_len < 4096:
-                        break
-                print(response.decode("utf-8"))
-                
+            with socket.create_connection((self.host, self.port)) as sock:
+                with context.wrap_socket(sock, server_hostname=self.hostname) as ssock:
+                    print(ssock.version())
+                    try:
+                        while True:
+                            buf = input("Input: ")
+                            buf += "\n"
+                            ssock.send(buf.encode("utf-8"))
+
+                            recv_len = 1
+                            response = b""
+                            while recv_len:
+                                data = ssock.recv(4096)
+                                recv_len = len(data)
+                                response += data
+                                if recv_len < 4096:
+                                    break
+                            print(response.decode("utf-8"))
+                    finally:
+                        ssock.close()                
         except Exception as e:
             print(f"[-] Exiting...exception: {e}")
-            self.socket.close()
 
     def nc_listen(self):
-        self.socket.bind((self.host, self.port))
-        self.socket.listen(5)
-        client_socket, addr = self.socket.accept()
-        if self.verbose:
-            print(f"Receive client socket: {client_socket}")
-        client_thread = threading.Thread(target=self.client_handler, args=(client_socket,))
-        client_thread.start()
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        context.load_cert_chain(self.certpath, self.keypath)
+
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as sock:
+            sock.bind((self.host, self.port))
+            sock.listen(5)
+            with context.wrap_socket(sock, server_side=True) as ssock:
+                while True:
+                    conn, addr = ssock.accept()
+                    try:
+                        if self.verbose:
+                            print(f"Receive client socket: {conn}")
+                        while True:
+                            cmd_buf = b""
+                            while b"\n" not in cmd_buf:
+                                cmd_buf += conn.recv(1024)
+                            # TODO: can't capture client exit
+                            if len(cmd_buf) == 0:
+                                break
+                            response = self.exec_command(cmd_buf.decode("utf-8"))
+                            conn.send(response)
+                        if self.verbose:
+                            print(f"Closing: {conn}")
+                        conn.close()
+
+                        # client_thread = threading.Thread(target=self.client_handler, args=(conn,))
+                        # client_thread.start()
+                    except ssl.SSLError as e:
+                        print(e)
+                    finally:
+                        conn.close()
 
     def client_handler(self, client_socket):
-        if self.ssl:
-            client_socket = ssl.wrap_socket(client_socket, 
-                                   server_side=True,
-                                   certfile=self.certpath,
-                                   keyfile=self.keypath)
-
         while True:
             cmd_buf = b""
             while b"\n" not in cmd_buf:
@@ -87,8 +108,8 @@ class PyCat():
     def exec_command(self, command):
         command = command.rstrip()
         print(command)
-        cmd = f"{self.exec} {command}"
-        if self.exec == "/bin/bash" or self.exec == "/bin/sh":
+        cmd = f"{self.execute} {command}"
+        if self.execute == "/bin/bash" or self.execute == "/bin/sh":
             cmd = command
         output, stderr = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True).communicate()
         if stderr:
