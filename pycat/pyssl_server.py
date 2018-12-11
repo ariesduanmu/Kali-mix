@@ -2,7 +2,7 @@
 # @Author: ariesduanmu
 # @Date:   2018-12-10 20:10:49
 # @Last Modified by:   ariesduanmu
-# @Last Modified time: 2018-12-11 09:56:44
+# @Last Modified time: 2018-12-11 14:49:06
 import socket, ssl, os
 import datetime
 
@@ -13,7 +13,7 @@ from cryptography import x509
 from cryptography.x509.oid import NameOID
 from cryptography.hazmat.primitives import hashes
 
-HOST, PORT, CERT, KEY = 'localhost', 8888, 'server.crt', 'server.key'
+HOST, PORT, CERT, KEY = 'localhost', 8888, 'server_2.crt', 'server_2.key'
 
 def generate_cert(keypath, certpath):
     key = rsa.generate_private_key(
@@ -63,23 +63,22 @@ def handle(conn):
     conn.write('HTTP/1.1 200 OK\n\n{}'.format(conn.getpeername()[0]).encode())
 
 def main():
-    sock = socket.socket()
-    sock.bind((HOST, PORT))
-    sock.listen(5)
-    while True:
-        conn = None
-        ssock, addr = sock.accept()
-        try:
-            conn = ssl.wrap_socket(ssock, 
-                                   server_side=True,
-                                   certfile=CERT,
-                                   keyfile=KEY)
-            handle(conn)
-        except ssl.SSLError as e:
-            print(e)
-        finally:
-            if conn:
-                conn.close()
+
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    context.load_cert_chain(CERT, KEY)
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as sock:
+        sock.bind((HOST, PORT))
+        sock.listen(5)
+        with context.wrap_socket(sock, server_side=True) as ssock:
+            while True:
+                conn, addr = ssock.accept()
+                try:
+                    handle(conn)
+                except ssl.SSLError as e:
+                    print(e)
+                finally:
+                    conn.close()
 
 if __name__ == '__main__':
     if not os.path.exists(KEY) or not os.path.exists(CERT):
