@@ -16,35 +16,29 @@ from cryptography import x509
 from cryptography.x509.oid import NameOID
 from cryptography.hazmat.primitives import hashes
 
-class PyCat():
-    def __init__(self, host, port, execute, listen, verbose, ssl_mode=True):
-        self.buffer = b""
-        self.listen = listen
+
+class PyCatBase():
+    def __init__(self, host, port, execute, verbose, ssl_mode):
         self.ssl = ssl_mode
-        if self.ssl:
-            if self.listen:
-                self.keypath, self.certpath = self.generate_cert()
-                self.context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-                self.context.load_cert_chain(self.certpath, self.keypath)
-            else:
-                self.context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-                self.context.check_hostname = False
-                self.context.verify_mode = ssl.CERT_NONE
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.exec = execute
         self.port = port
         self.verbose = verbose
         self.host = host or '0.0.0.0'
-        self.main_func = self.nc_listen if self.listen else self.nc_connect
-        self.main()
 
-    def exit(self):
+    def __exit__(self, *args):
         self.sock.close()
-        os.remove(self.cert_file)
-        os.remove(self.key_file)
-        # self.socket.shutdown(socket.SHUT_RDWR)
 
-    def generate_cert(self):
+class PyCatServer(PyCatBase):
+    def __init__(self, *args):
+        super(PyCatServer, self).__init__(*args)
+        if self.ssl:
+            self.keypath, self.certpath = PyCatServer.generate_cert()
+            self.context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+            self.context.load_cert_chain(self.certpath, self.keypath)
+
+    @staticmethod
+    def generate_cert():
         _, keypath = tempfile.mkstemp()
         _, certpath = tempfile.mkstemp()
         key = rsa.generate_private_key(
@@ -89,71 +83,43 @@ class PyCat():
             f.write(cert.public_bytes(serialization.Encoding.PEM))
         return keypath, certpath
 
-    def read(self, length=1024):
-        return self.socket.recv(length)
+    def __exit__(self, *args):
+        if self.ssl:
+            os.remove(self.keypath)
+            os.remove(self.certpath)
+        self.sock.close()
 
-    def nc_connect(self):
-        try:
-            self.sock.connect((self.host, self.port))
-            if self.ssl:
-                self.sock = self.context.wrap_socket(self.sock)
-                while True:
-                    buf = input("Input: ")
-                    buf += "\n"
-                    self.sock.send(buf.encode("utf-8"))
-
-                    recv_len = 1
-                    response = b""
-                    while recv_len:
-                        data = self.sock.recv(4096)
-                        recv_len = len(data)
-                        response += data
-                        if recv_len < 4096:
-                            break
-                    print(response.decode("utf-8"))
-               
-        except Exception as e:
-            print(f"[-] Exiting...exception: {e}")
-
-    def nc_listen(self):
+    def run(self):
         self.sock.bind((self.host, self.port))
         self.sock.listen(5)
 
         if self.ssl:
             self.sock = self.context.wrap_socket(self.sock, server_side=True)
-        
         while True:
             conn, addr = self.sock.accept()
             try:
                 if self.verbose:
                     print(f"Receive client socket: {conn}")
-                while True:
-                    cmd_buf = b""
-                    while b"\n" not in cmd_buf:
-                        cmd_buf += conn.recv(1024)
-                    # TODO: can't capture client exit
-                    if len(cmd_buf) == 0:
-                        break
-                    response = self.exec_command(cmd_buf.decode("utf-8"))
-                    conn.send(response)
+                self.client_handle(conn)
+                
             except ssl.SSLError as e:
                 print(e)
             finally:
                 conn.close()
 
-    def client_handler(self, client_socket):
+    def client_handle(self, conn):
         while True:
             cmd_buf = b""
             while b"\n" not in cmd_buf:
-                cmd_buf += client_socket.recv(1024)
+                cmd_buf += conn.recv(1024)
             # TODO: can't capture client exit
             if len(cmd_buf) == 0:
                 break
             response = self.exec_command(cmd_buf.decode("utf-8"))
-            client_socket.send(response)
+            conn.send(response)
         if self.verbose:
-            print(f"Closing: {client_socket}")
-        client_socket.close()
+            print(f"Closing: {conn}")
+        conn.close()
 
     def exec_command(self, command):
         command = command.rstrip()
@@ -166,15 +132,42 @@ class PyCat():
             output = b"Failed to execute command." + stderr + b"\n"
         return output
 
-    def main(self):
-        try:
-            self.main_func()
-        except KeyboardInterrupt:
-            self.exit()
-            print('[!] ^C revieved, Exiting...')
-        except EOFError:
-            self.exit()
-            print('[!] ^D revieved, Exiting...')
+
+
+class PyCatClient(PyCatBase):
+    def __init__(self, *args):
+        super(PyCatClient, self).__init__(*args)
+        if self.ssl:
+            self.context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+            self.context.check_hostname = False
+            self.context.verify_mode = ssl.CERT_NONE
+
+    def __exit__(self, *args):
+        self.sock.close()
+
+    def run(self):
+        self.sock.connect((self.host, self.port))
+        if self.ssl:
+            self.sock = self.context.wrap_socket(self.sock)
+        self.handle_commamd()
+
+
+    def handle_commamd(self):
+         while True:
+            buf = input("Input: ")
+            buf += "\n"
+            self.sock.send(buf.encode("utf-8"))
+
+            recv_len = 1
+            response = b""
+            while recv_len:
+                data = self.sock.recv(4096)
+                recv_len = len(data)
+                response += data
+                if recv_len < 4096:
+                    break
+            print(response.decode("utf-8"))
+
 
 # nc -l 8000
 # cat /tmp/fifo | nc localhost 8000 | nc -l 9000 > /tmp/fifo
@@ -194,9 +187,16 @@ def parse_arguments():
     parser.add_argument('-e', '--exec', type=str, default="/bin/echo", help='progress to exec client\'s command')
     args = parser.parse_args()
 
-    return args.ip, args.port, args.exec, args.listen, args.verbose, args.ssl
+    return args
 
 if __name__ == '__main__':
-    PyCat(*parse_arguments())
+    args = parse_arguments()
+    if args.listen:
+        server = PyCatServer(args.ip, args.port, args.exec, args.verbose, args.ssl)
+        server.run()
+    else:
+        client = PyCatClient(args.ip, args.port, args.exec, args.verbose, args.ssl)
+        client.run()
+
 
 
